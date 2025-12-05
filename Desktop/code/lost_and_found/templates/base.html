@@ -24,7 +24,7 @@
             --primary-color: #4895ef;
             --secondary-color: #4361ee;
             --accent-color: #4cc9f0;
-            --light-color: #121212;
+            --light-color: #f8f9fa; /* Lighter text for dark mode */
             --dark-color: #f8f9fa;
             --success-color: #4caf50;
             --warning-color: #ff9800;
@@ -37,8 +37,8 @@
             min-height: 100vh;
             transition: background 0.3s ease;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Fixed background image from local iStock photo with balanced fade */
-            background-image: url('/static/images/istockphoto-900408694-612x612.jpg');
+            /* Fixed background image from local Gemini generated image with balanced fade */
+            background-image: url('/static/images/Gemini_Generated_Image_f0alljf0alljf0al.png');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
@@ -52,21 +52,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(245, 247, 250, 0.7); /* Light overlay for better contrast */
+            background: rgba(245, 247, 250, 0.85); /* Lighter overlay for better text contrast */
             z-index: -1;
             pointer-events: none;
         }
         
         [data-theme="dark"] body {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            background-image: url('/static/images/istockphoto-900408694-612x612.jpg');
+            background-image: url('/static/images/Gemini_Generated_Image_f0alljf0alljf0al.png');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
         }
         
         [data-theme="dark"] body::before {
-            background: rgba(26, 26, 46, 0.8); /* Darker overlay for dark mode */
+            background: rgba(10, 10, 20, 0.85); /* Darker overlay for dark mode with better text contrast */
         }
         
         .navbar {
@@ -76,8 +76,15 @@
         }
         
         [data-theme="dark"] .navbar {
-            background: rgba(30, 30, 46, 0.9) !important;
+            background: rgba(30, 30, 46, 0.95) !important;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        [data-theme="dark"] .navbar-brand,
+        [data-theme="dark"] .nav-link,
+        [data-theme="dark"] .navbar-text {
+            color: #f8f9fa !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
         
         .card {
@@ -91,8 +98,15 @@
         }
         
         [data-theme="dark"] .card {
-            background: rgba(30, 30, 46, 0.85);
+            background: rgba(30, 30, 46, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8f9fa;
+        }
+        
+        [data-theme="dark"] .card-title,
+        [data-theme="dark"] .card-text,
+        [data-theme="dark"] .card-body {
+            color: #f8f9fa;
         }
         
         .card:hover {
@@ -108,6 +122,11 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        [data-theme="dark"] .jumbotron {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         
         .jumbotron::before {
@@ -117,11 +136,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('/static/images/istockphoto-900408694-612x612.jpg');
+            background-image: url('/static/images/Gemini_Generated_Image_f0alljf0alljf0al.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.15; /* Balanced fade for jumbotron overlay */
+            opacity: 0.2; /* Slightly more visible overlay for jumbotron */
             z-index: 0;
         }
         
@@ -166,8 +185,12 @@
         }
         
         [data-theme="dark"] .footer {
-            background: rgba(30, 30, 46, 0.9);
+            background: rgba(30, 30, 46, 0.95);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .footer .text-muted {
+            color: #adb5bd !important;
         }
         
         .animated-gradient {
