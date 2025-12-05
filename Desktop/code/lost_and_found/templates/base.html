@@ -38,7 +38,7 @@
             transition: background 0.3s ease;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             /* Fixed background image from local iStock photo with balanced fade */
-            background-image: url('../istockphoto-900408694-612x612.jpg');
+            background-image: url('/static/images/istockphoto-900408694-612x612.jpg');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
@@ -59,7 +59,7 @@
         
         [data-theme="dark"] body {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            background-image: url('../istockphoto-900408694-612x612.jpg');
+            background-image: url('/static/images/istockphoto-900408694-612x612.jpg');
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
@@ -117,7 +117,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('../istockphoto-900408694-612x612.jpg') center/cover no-repeat;
+            background-image: url('/static/images/istockphoto-900408694-612x612.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             opacity: 0.15; /* Balanced fade for jumbotron overlay */
             z-index: 0;
         }
@@ -454,6 +457,12 @@
                     card.classList.add('visible');
                 }, 200 * index);
             });
+        });
+        
+        // Set background image
+        document.addEventListener('DOMContentLoaded', function() {
+            // The background images are now set directly in CSS
+            // This function can be removed or used for other dynamic adjustments if needed
         });
     </script>
 </body>
