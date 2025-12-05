@@ -50,7 +50,7 @@
                                 {% else %}
                                     {{ message.sender_name }}
                                 {% endif %}
-                                <small class="opacity-75">({{ message.created_at.strftime('%Y-%m-%d %H:%M') }})</small>
+                                <small class="{% if message.sender_id == user.id %}text-white-50{% else %}text-muted{% endif %}">({{ message.created_at.strftime('%Y-%m-%d %H:%M') }})</small>
                             </div>
                             <div>{{ message.message }}</div>
                         </div>
