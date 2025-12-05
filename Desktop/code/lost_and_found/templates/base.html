@@ -621,51 +621,81 @@
         
         /* Specific fixes for admin management cards */
         [data-theme="dark"] #admin .card {
-            background: rgba(30, 30, 46, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(248, 249, 250, 0.9); /* Light background */
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         [data-theme="dark"] #admin .card-header {
-            background: rgba(30, 30, 46, 0.95);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(233, 236, 239, 0.95); /* Slightly darker light background */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         [data-theme="dark"] #admin .card-body {
-            background: rgba(30, 30, 46, 0.9);
+            background: rgba(248, 249, 250, 0.9); /* Light background */
         }
         
-        /* Ensure all text in admin section is visible */
+        /* Ensure all text in admin section is visible with dark text on light background */
         [data-theme="dark"] #admin * {
-            color: #f8f9fa !important;
+            color: #212529 !important; /* Dark text for better contrast on light background */
         }
         
         /* Fix for item management tables */
         [data-theme="dark"] #admin .table {
-            color: #f8f9fa;
-            background-color: rgba(30, 30, 46, 0.9);
+            color: #212529; /* Dark text */
+            background-color: rgba(248, 249, 250, 0.9); /* Light background */
         }
         
         [data-theme="dark"] #admin .table th,
         [data-theme="dark"] #admin .table td {
-            color: #f8f9fa !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #212529 !important; /* Dark text */
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         [data-theme="dark"] #admin .table-striped > tbody > tr:nth-of-type(odd) {
-            background-color: rgba(30, 30, 46, 0.7);
+            background-color: rgba(233, 236, 239, 0.7); /* Light gray */
         }
         
         [data-theme="dark"] #admin .table-striped > tbody > tr:nth-of-type(even) {
-            background-color: rgba(30, 30, 46, 0.9);
+            background-color: rgba(248, 249, 250, 0.9); /* Light background */
         }
         
         [data-theme="dark"] #admin .table-hover > tbody > tr:hover {
-            background-color: rgba(72, 149, 239, 0.2);
+            background-color: rgba(206, 212, 218, 0.5); /* Light hover effect */
         }
         
-        /* Ensure all text in admin section tables is visible */
+        /* Ensure all text in admin section tables is visible with dark text */
         [data-theme="dark"] #admin .table * {
-            color: #f8f9fa !important;
+            color: #212529 !important; /* Dark text for better contrast */
+        }
+        
+        /* Override badge colors for dark mode with light background */
+        [data-theme="dark"] #admin .badge {
+            color: #212529 !important; /* Dark text */
+        }
+        
+        [data-theme="dark"] #admin .badge.bg-warning {
+            background-color: #ffc107 !important; /* Bootstrap warning color */
+            color: #212529 !important; /* Dark text */
+        }
+        
+        [data-theme="dark"] #admin .badge.bg-info {
+            background-color: #17a2b8 !important; /* Bootstrap info color */
+            color: #fff !important; /* White text for better contrast */
+        }
+        
+        [data-theme="dark"] #admin .badge.bg-success {
+            background-color: #28a745 !important; /* Bootstrap success color */
+            color: #fff !important; /* White text for better contrast */
+        }
+        
+        [data-theme="dark"] #admin .badge.bg-danger {
+            background-color: #dc3545 !important; /* Bootstrap danger color */
+            color: #fff !important; /* White text for better contrast */
+        }
+        
+        [data-theme="dark"] #admin .badge.bg-secondary {
+            background-color: #6c757d !important; /* Bootstrap secondary color */
+            color: #fff !important; /* White text for better contrast */
         }
     </style>
 </head>
