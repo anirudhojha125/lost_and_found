@@ -133,6 +133,16 @@
             color: #f8f9fa !important;
         }
         
+        /* Specific card overrides for dashboard and admin panels */
+        [data-theme="dark"] .card-header {
+            background: rgba(30, 30, 46, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .card-body {
+            background: rgba(30, 30, 46, 0.9);
+        }
+        
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
@@ -451,8 +461,65 @@
             border-top: none;
         }
         
+        [data-theme="dark"] .table {
+            color: #f8f9fa;
+        }
+        
+        [data-theme="dark"] .table th,
+        [data-theme="dark"] .table td {
+            color: #f8f9fa !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(30, 30, 46, 0.7);
+        }
+        
+        [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) {
+            background-color: rgba(30, 30, 46, 0.9);
+        }
+        
+        [data-theme="dark"] .table-hover > tbody > tr:hover {
+            background-color: rgba(72, 149, 239, 0.2);
+        }
+        
         [data-theme="dark"] .table * {
             color: #f8f9fa !important;
+        }
+        
+        /* Badge styling in dark mode */
+        [data-theme="dark"] .badge {
+            color: #f8f9fa !important;
+        }
+        
+        /* Background utilities for dark mode */
+        [data-theme="dark"] .bg-light {
+            background-color: rgba(30, 30, 46, 0.7) !important;
+        }
+        
+        [data-theme="dark"] .bg-primary {
+            background-color: rgba(72, 149, 239, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .bg-success {
+            background-color: rgba(76, 175, 80, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .bg-warning {
+            background-color: rgba(255, 152, 0, 0.9) !important;
+            color: #212529 !important;
+        }
+        
+        [data-theme="dark"] .bg-info {
+            background-color: rgba(33, 150, 243, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .bg-danger {
+            background-color: rgba(244, 67, 54, 0.9) !important;
+        }
+        
+        [data-theme="dark"] .bg-secondary {
+            background-color: rgba(173, 181, 189, 0.9) !important;
         }
         
         /* Badge enhancements */
