@@ -587,6 +587,81 @@
             border-color: rgba(255, 255, 255, 0.1);
             color: #f8f9fa !important;
         }
+        
+        /* Tab navigation styling for dark mode */
+        [data-theme="dark"] .nav-tabs {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .nav-tabs .nav-link {
+            color: #f8f9fa;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .nav-tabs .nav-link:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(30, 30, 46, 0.7);
+        }
+        
+        [data-theme="dark"] .nav-tabs .nav-link.active {
+            color: #f8f9fa;
+            background-color: rgba(30, 30, 46, 0.9);
+            border-color: rgba(255, 255, 255, 0.1);
+            border-bottom-color: rgba(30, 30, 46, 0.9);
+        }
+        
+        /* Tab content styling for dark mode */
+        [data-theme="dark"] .tab-content {
+            background-color: rgba(30, 30, 46, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+        }
+        
+        /* Specific fixes for admin management cards */
+        [data-theme="dark"] #admin .card {
+            background: rgba(30, 30, 46, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] #admin .card-header {
+            background: rgba(30, 30, 46, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] #admin .card-body {
+            background: rgba(30, 30, 46, 0.9);
+        }
+        
+        /* Ensure all text in admin section is visible */
+        [data-theme="dark"] #admin * {
+            color: #f8f9fa !important;
+        }
+        
+        /* Fix for item management tables */
+        [data-theme="dark"] #admin .table {
+            color: #f8f9fa;
+            background-color: rgba(30, 30, 46, 0.9);
+        }
+        
+        [data-theme="dark"] #admin .table th,
+        [data-theme="dark"] #admin .table td {
+            color: #f8f9fa !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] #admin .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(30, 30, 46, 0.7);
+        }
+        
+        [data-theme="dark"] #admin .table-striped > tbody > tr:nth-of-type(even) {
+            background-color: rgba(30, 30, 46, 0.9);
+        }
+        
+        [data-theme="dark"] #admin .table-hover > tbody > tr:hover {
+            background-color: rgba(72, 149, 239, 0.2);
+        }
     </style>
 </head>
 <body>
