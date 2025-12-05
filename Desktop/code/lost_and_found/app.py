@@ -261,13 +261,15 @@ def register():
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
-        phone = request.form['phone']
+        phone_digits = request.form['phone']
         
-        # Validate phone number format (must start with +91 and be 10 digits)
-        if not re.match(r'^\+91\d{10}$', phone):
-            flash('Please enter a valid Indian phone number with +91 country code (e.g., +919876543210)', 'error')
-            return render_template('register.html', is_admin=is_admin, is_main_admin=is_main_admin)
+        # Prepend +91 to the phone number
+        phone = f"+91{phone_digits}"
         
+        # Validate phone number format (must be exactly 10 digits)
+        if not re.match(r'^\d{10}$', phone_digits):
+            flash('Please enter a valid 10-digit Indian mobile number', 'error')
+            return render_template('register.html', is_admin=is_admin, is_main_admin=is_main_admin)        
         if password != confirm_password:
             flash('Passwords do not match!', 'error')
             return render_template('register.html', is_admin=is_admin, is_main_admin=is_main_admin)
