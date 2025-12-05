@@ -24,7 +24,7 @@
             --primary-color: #4895ef;
             --secondary-color: #4361ee;
             --accent-color: #4cc9f0;
-            --light-color: #f8f9fa; /* Lighter text for dark mode */
+            --light-color: #f8f9fa;
             --dark-color: #f8f9fa;
             --success-color: #4caf50;
             --warning-color: #ff9800;
@@ -63,10 +63,36 @@
             background-attachment: fixed;
             background-size: cover;
             background-position: center;
+            color: #f8f9fa; /* White text for dark mode */
         }
         
         [data-theme="dark"] body::before {
             background: rgba(10, 10, 20, 0.85); /* Darker overlay for dark mode with better text contrast */
+        }
+        
+        /* Global dark mode text color */
+        [data-theme="dark"] {
+            color: #f8f9fa !important;
+        }
+        
+        [data-theme="dark"] * {
+            color: #f8f9fa !important;
+        }
+        
+        [data-theme="dark"] p,
+        [data-theme="dark"] h1,
+        [data-theme="dark"] h2,
+        [data-theme="dark"] h3,
+        [data-theme="dark"] h4,
+        [data-theme="dark"] h5,
+        [data-theme="dark"] h6,
+        [data-theme="dark"] span,
+        [data-theme="dark"] div,
+        [data-theme="dark"] li,
+        [data-theme="dark"] td,
+        [data-theme="dark"] th,
+        [data-theme="dark"] label {
+            color: #f8f9fa !important;
         }
         
         .navbar {
@@ -98,15 +124,13 @@
         }
         
         [data-theme="dark"] .card {
-            background: rgba(30, 30, 46, 0.9);
+            background: rgba(30, 30, 46, 0.9); /* Light black dialog boxes */
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #f8f9fa;
         }
         
-        [data-theme="dark"] .card-title,
-        [data-theme="dark"] .card-text,
-        [data-theme="dark"] .card-body {
-            color: #f8f9fa;
+        [data-theme="dark"] .card * {
+            color: #f8f9fa !important;
         }
         
         .card:hover {
@@ -189,8 +213,8 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        [data-theme="dark"] .footer .text-muted {
-            color: #adb5bd !important;
+        [data-theme="dark"] .footer * {
+            color: #f8f9fa !important;
         }
         
         .animated-gradient {
@@ -306,124 +330,35 @@
         }
         
         [data-theme="dark"] .breadcrumb {
-            background: rgba(30, 30, 46, 0.7);
+            background: rgba(30, 30, 46, 0.7); /* Light black for breadcrumbs */
         }
         
-        [data-theme="dark"] .breadcrumb-item a {
-            color: #4895ef !important;
-        }
-        
-        [data-theme="dark"] .breadcrumb-item.active {
-            color: #adb5bd !important;
-        }
-        
-        /* Form control improvements for dark mode */
-        [data-theme="dark"] .form-control,
-        [data-theme="dark"] .form-select {
-            background-color: rgba(30, 30, 46, 0.7);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: #f8f9fa;
-        }
-        
-        [data-theme="dark"] .form-control:focus,
-        [data-theme="dark"] .form-select:focus {
-            background-color: rgba(30, 30, 46, 0.9);
-            border-color: var(--primary-color);
-            color: #f8f9fa;
-        }
-        
-        [data-theme="dark"] .form-control::placeholder {
-            color: #adb5bd;
-        }
-        
-        /* Alert improvements for dark mode */
-        [data-theme="dark"] .alert-primary {
-            background-color: rgba(72, 149, 239, 0.2);
-            border-color: rgba(72, 149, 239, 0.3);
-            color: #e9ecef;
-        }
-        
-        [data-theme="dark"] .alert-secondary {
-            background-color: rgba(173, 181, 189, 0.2);
-            border-color: rgba(173, 181, 189, 0.3);
-            color: #e9ecef;
-        }
-        
-        [data-theme="dark"] .alert-success {
-            background-color: rgba(76, 175, 80, 0.2);
-            border-color: rgba(76, 175, 80, 0.3);
-            color: #e9ecef;
-        }
-        
-        [data-theme="dark"] .alert-danger {
-            background-color: rgba(244, 67, 54, 0.2);
-            border-color: rgba(244, 67, 54, 0.3);
-            color: #e9ecef;
-        }
-        
-        [data-theme="dark"] .alert-warning {
-            background-color: rgba(255, 152, 0, 0.2);
-            border-color: rgba(255, 152, 0, 0.3);
-            color: #e9ecef;
-        }
-        
-        [data-theme="dark"] .alert-info {
-            background-color: rgba(33, 150, 243, 0.2);
-            border-color: rgba(33, 150, 243, 0.3);
-            color: #e9ecef;
-        }
-        
-        /* List group improvements for dark mode */
-        [data-theme="dark"] .list-group-item {
-            background-color: transparent;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        [data-theme="dark"] .list-group-item:first-child {
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-        }
-        
-        [data-theme="dark"] .list-group-item:last-child {
-            border-bottom-left-radius: 15px;
-            border-bottom-right-radius: 15px;
-        }
-        
-        /* Tab improvements for dark mode */
-        [data-theme="dark"] .nav-tabs {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        [data-theme="dark"] .nav-tabs .nav-link {
-            color: #adb5bd;
-        }
-        
-        [data-theme="dark"] .nav-tabs .nav-link.active {
-            color: #f8f9fa;
-            background-color: rgba(30, 30, 46, 0.9);
-            border-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.1) rgba(30, 30, 46, 0.9);
-        }
-        
-        /* Accordion improvements for dark mode */
-        [data-theme="dark"] .accordion-button {
-            color: #f8f9fa;
-            background-color: rgba(30, 30, 46, 0.7);
-        }
-        
-        [data-theme="dark"] .accordion-button:not(.collapsed) {
-            color: #f8f9fa;
-            background-color: rgba(30, 30, 46, 0.9);
-        }
-        
-        [data-theme="dark"] .accordion-item {
-            background-color: transparent;
-            border-color: rgba(255, 255, 255, 0.1);
+        [data-theme="dark"] .breadcrumb * {
+            color: #f8f9fa !important;
         }
         
         /* Form enhancements */
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+        
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background-color: rgba(30, 30, 46, 0.9); /* Light black form controls */
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f8f9fa !important;
+        }
+        
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background-color: rgba(30, 30, 46, 0.9);
+            border-color: var(--primary-color);
+            color: #f8f9fa !important;
+        }
+        
+        [data-theme="dark"] .form-control::placeholder {
+            color: #adb5bd !important;
         }
         
         /* Button hover effects */
@@ -448,6 +383,14 @@
             border: none;
         }
         
+        [data-theme="dark"] .modal-content {
+            background: rgba(30, 30, 46, 0.95); /* Light black modal */
+        }
+        
+        [data-theme="dark"] .modal-content * {
+            color: #f8f9fa !important;
+        }
+        
         /* Progress bar styling */
         .progress {
             border-radius: 10px;
@@ -459,10 +402,18 @@
             border-top: none;
         }
         
+        [data-theme="dark"] .table * {
+            color: #f8f9fa !important;
+        }
+        
         /* Badge enhancements */
         .badge {
             padding: 0.5em 0.75em;
             border-radius: 10px;
+        }
+        
+        [data-theme="dark"] .badge * {
+            color: inherit !important;
         }
         
         /* Navbar brand enhancement */
@@ -480,6 +431,45 @@
         
         [data-theme="dark"] .card-header {
             border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Text muted */
+        .text-muted {
+            color: #6c757d !important;
+        }
+        
+        [data-theme="dark"] .text-muted {
+            color: #adb5bd !important;
+        }
+        
+        /* Links */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        [data-theme="dark"] a {
+            color: #4895ef !important;
+        }
+        
+        a:hover {
+            color: var(--secondary-color);
+        }
+        
+        [data-theme="dark"] a:hover {
+            color: #3f37c9 !important;
+        }
+        
+        /* Buttons */
+        [data-theme="dark"] .btn {
+            color: #f8f9fa !important;
+        }
+        
+        /* Input groups */
+        [data-theme="dark"] .input-group-text {
+            background-color: rgba(30, 30, 46, 0.9);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #f8f9fa !important;
         }
     </style>
 </head>
@@ -591,12 +581,6 @@
                     card.classList.add('visible');
                 }, 200 * index);
             });
-        });
-        
-        // Set background image
-        document.addEventListener('DOMContentLoaded', function() {
-            // The background images are now set directly in CSS
-            // This function can be removed or used for other dynamic adjustments if needed
         });
     </script>
 </body>
