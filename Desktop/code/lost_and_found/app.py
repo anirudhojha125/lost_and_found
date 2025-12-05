@@ -350,8 +350,12 @@ def store_otp(phone, otp):
     cursor.close()
     conn.close()
     
+    # Store OTP in session for display during development
+    session['current_otp'] = otp
+    
     # Send OTP via SMS
     send_otp_sms(phone, otp)
+
 def verify_otp(phone, otp):
     """Verify OTP and return True if valid, False otherwise"""
     conn = get_db_connection()
@@ -384,6 +388,10 @@ def verify_otp(phone, otp):
     conn.commit()
     cursor.close()
     conn.close()
+    
+    # Remove OTP from session
+    session.pop('current_otp', None)
+    
     return True
 
 @app.route('/verify_phone', methods=['GET', 'POST'])
