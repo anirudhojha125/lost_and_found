@@ -742,6 +742,25 @@
             background-color: #6c757d !important; /* Bootstrap secondary color */
             color: #fff !important; /* White text for better contrast */
         }
+        
+        /* Password toggle button styling */
+        .password-toggle-btn {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .password-toggle-btn:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        [data-theme="dark"] .password-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Ensure proper sizing for password toggle buttons */
+        .input-group .btn {
+            padding: 0.375rem 0.75rem;
+        }
     </style>
 </head>
 <body>
