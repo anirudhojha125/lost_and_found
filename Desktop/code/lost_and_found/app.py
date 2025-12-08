@@ -167,10 +167,13 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS otp_verifications (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            phone VARCHAR(15) UNIQUE NOT NULL,
+            phone VARCHAR(15),
+            email VARCHAR(100),
             otp VARCHAR(6) NOT NULL,
             expires_at TIMESTAMP NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX(phone),
+            INDEX(email)
         )
     ''')
     
@@ -342,9 +345,9 @@ def store_otp(phone, otp):
     # Insert new OTP with expiration time
     expires_at = datetime.now() + timedelta(minutes=10)
     cursor.execute('''
-        INSERT INTO otp_verifications (phone, otp, expires_at) 
-        VALUES (%s, %s, %s)
-    ''', (phone, otp, expires_at))
+        INSERT INTO otp_verifications (phone, email, otp, expires_at) 
+        VALUES (%s, %s, %s, %s)
+    ''', (phone, None, otp, expires_at))
     
     conn.commit()
     cursor.close()
@@ -357,19 +360,19 @@ def store_otp(phone, otp):
     send_otp_sms(phone, otp)
 
 def store_email_otp(email, otp):
-    """Store OTP for email verification (using email as phone field temporarily)"""
+    """Store OTP for email verification"""
     conn = get_db_connection()
     cursor = conn.cursor()
     
     # Delete any existing OTP for this email
-    cursor.execute("DELETE FROM otp_verifications WHERE phone = %s", (email,))
+    cursor.execute("DELETE FROM otp_verifications WHERE email = %s", (email,))
     
     # Insert new OTP with expiration time
     expires_at = datetime.now() + timedelta(minutes=10)
     cursor.execute('''
-        INSERT INTO otp_verifications (phone, otp, expires_at) 
-        VALUES (%s, %s, %s)
-    ''', (email, otp, expires_at))
+        INSERT INTO otp_verifications (phone, email, otp, expires_at) 
+        VALUES (%s, %s, %s, %s)
+    ''', (None, email, otp, expires_at))
     
     conn.commit()
     cursor.close()
@@ -413,6 +416,41 @@ def verify_otp(phone, otp):
     
     # Remove OTP from session
     session.pop('current_otp', None)
+    
+    return True
+
+def verify_email_otp(email, otp):
+    """Verify email OTP and return True if valid, False otherwise"""
+    conn = get_db_connection()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+    
+    # Get OTP record
+    cursor.execute('''
+        SELECT * FROM otp_verifications 
+        WHERE email = %s AND otp = %s
+    ''', (email, otp))
+    
+    otp_record = cursor.fetchone()
+    
+    if not otp_record:
+        cursor.close()
+        conn.close()
+        return False
+    
+    # Check if OTP is expired
+    if datetime.now() > otp_record['expires_at']:
+        # Delete expired OTP
+        cursor.execute("DELETE FROM otp_verifications WHERE email = %s", (email,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return False
+    
+    # Delete used OTP
+    cursor.execute("DELETE FROM otp_verifications WHERE email = %s", (email,))
+    conn.commit()
+    cursor.close()
+    conn.close()
     
     return True
 
@@ -592,26 +630,7 @@ def verify_reset_otp():
                 flash('Invalid or expired OTP. Please try again.', 'error')
         else:
             # For email, we'll verify against the stored OTP
-            conn = get_db_connection()
-            cursor = conn.cursor(pymysql.cursors.DictCursor)
-            cursor.execute('''
-                SELECT * FROM otp_verifications 
-                WHERE phone = %s AND otp = %s
-            ''', (identifier, otp))
-            
-            otp_record = cursor.fetchone()
-            cursor.close()
-            conn.close()
-            
-            if otp_record and datetime.now() <= otp_record['expires_at']:
-                # Delete used OTP
-                conn = get_db_connection()
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM otp_verifications WHERE phone = %s", (identifier,))
-                conn.commit()
-                cursor.close()
-                conn.close()
-                
+            if verify_email_otp(identifier, otp):
                 session['otp_verified'] = True
                 flash('OTP verified successfully. You can now reset your password.', 'success')
                 return redirect(url_for('reset_password'))
