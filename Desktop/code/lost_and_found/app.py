@@ -47,21 +47,13 @@ def get_db_connection():
     return pymysql.connect(**DB_CONFIG)
 
 def init_db():
-    # Connect without specifying database first 
-    config_without_db = DB_CONFIG.copy()
-    config_without_db.pop('database')
-    conn = pymysql.connect(**config_without_db)
+    # Connect without specifying database first
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     # Create database if it doesn't exist
     cursor.execute("CREATE DATABASE IF NOT EXISTS lost_and_found")
-    conn.commit()
-    cursor.close()
-    conn.close()
-    
-    # Now connect to the database and create tables
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor.execute("USE lost_and_found")
     
     # Create users table
     cursor.execute('''
@@ -71,41 +63,18 @@ def init_db():
             email VARCHAR(100) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
             phone VARCHAR(15) UNIQUE,
-            phone_verified BOOLEAN DEFAULT FALSE,
-            role ENUM('student', 'admin', 'main_admin') DEFAULT 'student',
+            role ENUM('user', 'admin', 'main_admin') DEFAULT 'user',
             verified BOOLEAN DEFAULT FALSE,
+            phone_verified BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
-    
-    # Add phone and phone_verified columns if they don't exist
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN phone VARCHAR(15) UNIQUE")
-    except pymysql.Error:
-        pass  # Column already exists
-    
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN phone_verified BOOLEAN DEFAULT FALSE")
-    except pymysql.Error:
-        pass  # Column already exists
-    
-    # Add role column if it doesn't exist
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN role ENUM('student', 'admin', 'main_admin') DEFAULT 'student'")
-    except pymysql.Error:
-        pass  # Column already exists
-    
-    # Add verified column if it doesn't exist
-    try:
-        cursor.execute("ALTER TABLE users ADD COLUMN verified BOOLEAN DEFAULT FALSE")
-    except pymysql.Error:
-        pass  # Column already exists
     
     # Create lost_items table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS lost_items (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
+            user_id INT,
             item_name VARCHAR(100) NOT NULL,
             description TEXT,
             location_lost VARCHAR(100),
@@ -115,53 +84,15 @@ def init_db():
             claimed BOOLEAN DEFAULT FALSE,
             claimed_by INT,
             claimed_at TIMESTAMP NULL,
-            recovered BOOLEAN DEFAULT FALSE,
-            satisfaction_rating INT DEFAULT NULL,
-            verified BOOLEAN DEFAULT FALSE,
-            category ENUM('electronics', 'academics', 'keys', 'accessories', 'others') DEFAULT 'others',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            recovered BOOLEAN DEFAULT FALSE,
+            satisfaction_rating INT NULL,
+            verified BOOLEAN DEFAULT FALSE,
+            category ENUM('electronics', 'academics', 'keys', 'accessories', 'others'),
             FOREIGN KEY (user_id) REFERENCES users(id),
             FOREIGN KEY (claimed_by) REFERENCES users(id)
         )
     ''')
-    
-    # Create messages table for chat system
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            item_id INT NOT NULL,
-            sender_id INT NOT NULL,
-            receiver_id INT NOT NULL,
-            message TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (item_id) REFERENCES lost_items(id),
-            FOREIGN KEY (sender_id) REFERENCES users(id),
-            FOREIGN KEY (receiver_id) REFERENCES users(id)
-        )
-    ''')
-    
-    # Add recovered and satisfaction_rating columns if they don't exist
-    try:
-        cursor.execute("ALTER TABLE lost_items ADD COLUMN recovered BOOLEAN DEFAULT FALSE")
-    except pymysql.Error:
-        pass  # Column already exists
-    
-    try:
-        cursor.execute("ALTER TABLE lost_items ADD COLUMN satisfaction_rating INT DEFAULT NULL")
-    except pymysql.Error:
-        pass  # Column already exists
-    
-    # Add verified column if it doesn't exist
-    try:
-        cursor.execute("ALTER TABLE lost_items ADD COLUMN verified BOOLEAN DEFAULT FALSE")
-    except pymysql.Error:
-        pass  # Column already exists
-    
-    # Add category column if it doesn't exist
-    try:
-        cursor.execute("ALTER TABLE lost_items ADD COLUMN category ENUM('electronics', 'academics', 'keys', 'accessories', 'others') DEFAULT 'others'")
-    except pymysql.Error:
-        pass  # Column already exists
     
     # Create otp_verifications table for storing OTPs
     cursor.execute('''
@@ -174,6 +105,30 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             INDEX(phone),
             INDEX(email)
+        )
+    ''')
+    
+    # Add indexes if they don't exist
+    try:
+        cursor.execute("ALTER TABLE otp_verifications ADD INDEX idx_phone (phone)")
+    except:
+        pass  # Index might already exist
+    
+    try:
+        cursor.execute("ALTER TABLE otp_verifications ADD INDEX idx_email (email)")
+    except:
+        pass  # Index might already exist
+    
+    # Create chat_messages table for item-specific chats
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            item_id INT NOT NULL,
+            sender_id INT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (item_id) REFERENCES lost_items(id),
+            FOREIGN KEY (sender_id) REFERENCES users(id)
         )
     ''')
     
