@@ -314,28 +314,6 @@ def store_otp(phone, otp):
     # Send OTP via SMS
     send_otp_sms(phone, otp)
 
-def store_email_otp(email, otp):
-    """Store OTP for email verification"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    # Delete any existing OTP for this email
-    cursor.execute("DELETE FROM otp_verifications WHERE email = %s", (email,))
-    
-    # Insert new OTP with expiration time
-    expires_at = datetime.now() + timedelta(minutes=10)
-    cursor.execute('''
-        INSERT INTO otp_verifications (phone, email, otp, expires_at) 
-        VALUES (%s, %s, %s, %s)
-    ''', (None, email, otp, expires_at))
-    
-    conn.commit()
-    cursor.close()
-    conn.close()
-    
-    # For development, we'll show the OTP in the flash message
-    # In production, you would send it via email
-
 def verify_otp(phone, otp):
     """Verify OTP and return True if valid, False otherwise"""
     conn = get_db_connection()
@@ -371,41 +349,6 @@ def verify_otp(phone, otp):
     
     # Remove OTP from session
     session.pop('current_otp', None)
-    
-    return True
-
-def verify_email_otp(email, otp):
-    """Verify email OTP and return True if valid, False otherwise"""
-    conn = get_db_connection()
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    
-    # Get OTP record
-    cursor.execute('''
-        SELECT * FROM otp_verifications 
-        WHERE email = %s AND otp = %s
-    ''', (email, otp))
-    
-    otp_record = cursor.fetchone()
-    
-    if not otp_record:
-        cursor.close()
-        conn.close()
-        return False
-    
-    # Check if OTP is expired
-    if datetime.now() > otp_record['expires_at']:
-        # Delete expired OTP
-        cursor.execute("DELETE FROM otp_verifications WHERE email = %s", (email,))
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return False
-    
-    # Delete used OTP
-    cursor.execute("DELETE FROM otp_verifications WHERE email = %s", (email,))
-    conn.commit()
-    cursor.close()
-    conn.close()
     
     return True
 
@@ -511,55 +454,47 @@ def login():
 @app.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
-        identifier = request.form.get('identifier', '').strip()
+        phone = request.form.get('phone', '').strip()
         
-        if not identifier:
-            flash('Please enter your username, email, or phone number.', 'error')
+        if not phone:
+            flash('Please enter your phone number.', 'error')
             return render_template('forgot_password.html')
         
+        # Validate phone number format (10 digits)
+        if not re.match(r'^[0-9]{10}$', phone):
+            flash('Please enter a valid 10-digit phone number.', 'error')
+            return render_template('forgot_password.html')
+        
+        # Format phone number with +91 prefix
+        formatted_phone = f"+91{phone}"
+        
+        # Check if user exists with this phone number
         conn = get_db_connection()
         cursor = conn.cursor(pymysql.cursors.DictCursor)
-        
-        # Check if identifier is phone number, email, or username
-        if identifier.startswith('+91') and len(identifier) == 13 and identifier[1:].isdigit():
-            # Phone number
-            cursor.execute('SELECT * FROM users WHERE phone = %s', (identifier,))
-        elif '@' in identifier:
-            # Email
-            cursor.execute('SELECT * FROM users WHERE email = %s', (identifier,))
-        else:
-            # Username
-            cursor.execute('SELECT * FROM users WHERE username = %s', (identifier,))
-        
+        cursor.execute('SELECT * FROM users WHERE phone = %s', (formatted_phone,))
         user = cursor.fetchone()
         cursor.close()
         conn.close()
         
         if not user:
-            flash('No account found with that username, email, or phone number.', 'error')
+            flash('No account found with that phone number.', 'error')
             return render_template('forgot_password.html')
         
-        # Store user info in session for next step
+        # Store user info in session for next steps
         session['reset_user_id'] = user['id']
-        session['reset_identifier'] = identifier
-        session['reset_method'] = 'email' if '@' in identifier else 'phone'
+        session['reset_phone'] = formatted_phone
         
         # Generate and send OTP
         otp = generate_otp()
-        if session['reset_method'] == 'phone':
-            store_otp(identifier, otp)
-            flash(f'OTP sent to your phone {identifier}', 'success')
-        else:
-            # For email, we'll store it in the database and show it for development
-            store_email_otp(identifier, otp)
-            flash(f'OTP sent to your email. For development, OTP is: {otp}', 'success')
+        store_otp(formatted_phone, otp)
+        flash(f'OTP sent to your phone {formatted_phone}', 'success')
         
-        return redirect(url_for('verify_reset_otp'))
+        return redirect(url_for('verify_forgot_password_otp'))
     
     return render_template('forgot_password.html', is_admin=is_admin, is_main_admin=is_main_admin)
 
-@app.route('/verify_reset_otp', methods=['GET', 'POST'])
-def verify_reset_otp():
+@app.route('/verify_forgot_password_otp', methods=['GET', 'POST'])
+def verify_forgot_password_otp():
     if 'reset_user_id' not in session:
         flash('Session expired. Please start over.', 'error')
         return redirect(url_for('forgot_password'))
@@ -569,33 +504,23 @@ def verify_reset_otp():
         
         if not otp:
             flash('Please enter the OTP.', 'error')
-            return render_template('verify_reset_otp.html')
+            return render_template('verify_forgot_password_otp.html')
         
-        # Get user info from session
-        user_id = session['reset_user_id']
-        identifier = session['reset_identifier']
+        # Get phone number from session
+        phone = session['reset_phone']
         
         # Verify OTP
-        if session['reset_method'] == 'phone':
-            if verify_otp(identifier, otp):
-                session['otp_verified'] = True
-                flash('OTP verified successfully. You can now reset your password.', 'success')
-                return redirect(url_for('reset_password'))
-            else:
-                flash('Invalid or expired OTP. Please try again.', 'error')
+        if verify_otp(phone, otp):
+            session['otp_verified'] = True
+            flash('OTP verified successfully. You can now reset your password.', 'success')
+            return redirect(url_for('reset_forgot_password'))
         else:
-            # For email, we'll verify against the stored OTP
-            if verify_email_otp(identifier, otp):
-                session['otp_verified'] = True
-                flash('OTP verified successfully. You can now reset your password.', 'success')
-                return redirect(url_for('reset_password'))
-            else:
-                flash('Invalid or expired OTP. Please try again.', 'error')
+            flash('Invalid or expired OTP. Please try again.', 'error')
     
-    return render_template('verify_reset_otp.html', is_admin=is_admin, is_main_admin=is_main_admin)
+    return render_template('verify_forgot_password_otp.html', is_admin=is_admin, is_main_admin=is_main_admin)
 
-@app.route('/reset_password', methods=['GET', 'POST'])
-def reset_password():
+@app.route('/reset_forgot_password', methods=['GET', 'POST'])
+def reset_forgot_password():
     if 'reset_user_id' not in session or not session.get('otp_verified'):
         flash('Access denied. Please verify OTP first.', 'error')
         return redirect(url_for('forgot_password'))
@@ -606,15 +531,15 @@ def reset_password():
         
         if not password or not confirm_password:
             flash('Please fill in all fields.', 'error')
-            return render_template('reset_password.html')
+            return render_template('reset_forgot_password.html')
         
         if password != confirm_password:
             flash('Passwords do not match.', 'error')
-            return render_template('reset_password.html')
+            return render_template('reset_forgot_password.html')
         
         if len(password) < 6:
             flash('Password must be at least 6 characters long.', 'error')
-            return render_template('reset_password.html')
+            return render_template('reset_forgot_password.html')
         
         # Update password in database
         conn = get_db_connection()
@@ -631,14 +556,13 @@ def reset_password():
         
         # Clear session
         session.pop('reset_user_id', None)
-        session.pop('reset_identifier', None)
-        session.pop('reset_method', None)
+        session.pop('reset_phone', None)
         session.pop('otp_verified', None)
         
         flash('Password reset successfully. You can now log in with your new password.', 'success')
         return redirect(url_for('login'))
     
-    return render_template('reset_password.html', is_admin=is_admin, is_main_admin=is_main_admin)
+    return render_template('reset_forgot_password.html', is_admin=is_admin, is_main_admin=is_main_admin)
 
 @app.route('/logout')
 def logout():
