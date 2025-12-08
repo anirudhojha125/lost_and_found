@@ -95,6 +95,51 @@
             color: #f8f9fa !important;
         }
         
+        /* More specific dark mode fixes for item details */
+        [data-theme="dark"] .list-group-item {
+            background-color: transparent !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        [data-theme="dark"] .card .list-group-item {
+            color: #f8f9fa !important;
+        }
+        
+        [data-theme="dark"] .badge {
+            color: white !important;
+        }
+        
+        /* Additional dark mode fixes for item details page */
+        [data-theme="dark"] .card-title {
+            color: #f8f9fa !important;
+        }
+        
+        [data-theme="dark"] .card-text {
+            color: #e9ecef !important;
+        }
+        
+        [data-theme="dark"] .bg-light {
+            background-color: rgba(30, 30, 46, 0.7) !important;
+        }
+        
+        [data-theme="dark"] .text-muted {
+            color: #adb5bd !important;
+        }
+        
+        /* Ensure proper contrast for status badges */
+        [data-theme="dark"] .badge.bg-success {
+            background-color: #4caf50 !important;
+        }
+        
+        [data-theme="dark"] .badge.bg-warning {
+            background-color: #ff9800 !important;
+            color: #212529 !important; /* Dark text for better contrast on warning */
+        }
+        
+        [data-theme="dark"] .badge.bg-secondary {
+            background-color: #6c757d !important;
+        }
+        
         .navbar {
             background: rgba(255, 255, 255, 0.9) !important;
             backdrop-filter: blur(10px);
